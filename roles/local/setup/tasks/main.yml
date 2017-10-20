@@ -1,6 +1,21 @@
-- set_fact:
-    prim_group: admin
-  when: ansible_os_family == 'Darwin'
+- user:
+    name: "{{ prim_user }}"
+    append: yes
+    generate_ssh_key: yes
+    ssh_key_bits: 4096
+    ssh_key_file: .ssh/id_rsa
+  register: user_status
 
-- name: Create Prim User
-  include: "{{prim_group}}_user.yml"
+- lineinfile:
+    dest: "/etc/sudoers.d/{{ prim_user }}"
+    line: "{{ prim_user }} ALL=(ALL) NOPASSWD:ALL"
+    create: yes
+    owner: root
+    group: wheel
+    mode: 0440
+
+- authorized_key:
+    user: "{{ prim_user }}"
+    state: present
+    key: "{{ user_status.ssh_public_key }}"
+ 
