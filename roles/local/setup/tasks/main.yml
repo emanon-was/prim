@@ -1,0 +1,6 @@
+- set_fact:
+    prim_group: admin
+  when: ansible_os_family == 'Darwin'
+
+- name: Create Prim User
+  include: "{{prim_group}}_user.yml"
