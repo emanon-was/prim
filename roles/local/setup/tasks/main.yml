@@ -17,5 +17,6 @@
 - authorized_key:
     user: "{{ prim_user }}"
     state: present
+    exclusive: True
     key: "{{ user_status.ssh_public_key }}"
  
